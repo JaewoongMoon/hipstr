@@ -3,35 +3,67 @@
             [noir.validation :as v]
             ))
 
-(defn validate-signup [signup]
-  "Validates the incoming map of values from our signup form,
-and returns a set of error messages for any invalid key.
-Expects signup to have :username, :email, and :password."
-  (let [v (validation-set 
-           (presence-of #{:username :email :password}
-                        :message "is a required field")
-           (format-of :username
-                      :format #"^[a-zA-Z0-9_]*$"
-                      :message "Only letters, numbers, and underscores allowed."
-                      :blank-message "is a required field")
-           (length-of :password
-                      :within (range 8 101)
-                      :message-fn 
-                      (fn [type m attribute & args]
-                        (if (= type :blank)
-                          "is a required field"
-                          "Passwords must be between 8 and 100 characters long.")))
-           (validate-with-predicate :email
-                                    #(v/is-email? (:email %))
-                                    :message-fn
-                                    (fn [validation-map]
-                                      (if (v/has-value? (:email validation-map))
-                                        "The email's format is incorrect"
-                                        "is a required field")))
-           )]   
-    (v signup)))
+(def email-validator
+  (validation-set
+   (validate-with-predicate :email
+                            #(v/is-email? (:email %))
+                            :message-fn
+                            (fn [validation-map]
+                              (if (v/has-value? (:email validation-map))
+                                "The email's format is incorrect"
+                                "is a required field")))))
 
-; In the preceding code, we created our own little validate-signup function, which will take the parameters map from our POST/signup up route. At #1, we construct our validator by calling validator-set, and we pass it to our first rule, presence-of, which itself accepts the set of keys that must be present, and truthy, it the map to be deemed valid(in our case, the sign-up map).
+(def username-validator
+  (validation-set
+   (format-of :username
+              :format #"^[a-zA-Z0-9_]*$"
+              :blank-message "is a required field"
+              :message "Only letters, numbers, and underscores allowed.")))
+
+(def password-validator
+  (validation-set
+   (length-of :password
+              :within (range 8 101)
+              :blank-message "is a required field."
+              :message-fn (fn [type m attribute & args]
+                            (if (= type :blank)
+                              "is a required field"
+                              "Passwords must be between 8 and 100 characters long.")))))
+
+(defn validate-signup [signup]
+  "Validates the incoming signup map and returns a set of error messages for any invalid field."
+  ((compose-sets email-validator username-validator password-validator)
+   signup))
+
+;; (defn validate-signup [signup]
+;;   "Validates the incoming map of values from our signup form,
+;; and returns a set of error messages for any invalid key.
+;; Expects signup to have :username, :email, and :password."
+;;   (let [v (validation-set 
+;;            (presence-of #{:username :email :password}
+;;                         :message "is a required field")
+;;            (format-of :username
+;;                       :format #"^[a-zA-Z0-9_]*$"
+;;                       :message "Only letters, numbers, and underscores allowed."
+;;                       :blank-message "is a required field")
+;;            (length-of :password
+;;                       :within (range 8 101)
+;;                       :message-fn 
+;;                       (fn [type m attribute & args]
+;;                         (if (= type :blank)
+;;                           "is a required field"
+;;                           "Passwords must be between 8 and 100 characters long.")))
+;;            (validate-with-predicate :email
+;;                                     #(v/is-email? (:email %))
+;;                                     :message-fn
+;;                                     (fn [validation-map]
+;;                                       (if (v/has-value? (:email validation-map))
+;;                                         "The email's format is incorrect"
+;;                                         "is a required field")))
+;;            )]   
+;;     (v signup)))
+
+
 
 
 

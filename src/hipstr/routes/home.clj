@@ -2,7 +2,8 @@
   (:require [compojure.core :refer :all]
             [hipstr.layout :as layout]
             [hipstr.util :as util]
-            [ring.util.response :as response]))
+            [ring.util.response :as response]
+            [hipstr.validators.user-validator :as v]))
 
 ; The home-page function isn't doting much.
 ; In fact, all it does is call hipstr.layout/render,
@@ -24,10 +25,10 @@
   (layout/render "signup.html"))
 
 (defn signup-page-submit [user]
-  #_(let [errors (signup/validate-signup user)]
+  (let [errors (v/validate-signup user)]
        (if (empty? errors)
          (response/redirect "/signup-success")
-         (layout/render "signup.html" (assoc user :errors erros)))))
+         (layout/render "signup.html" (assoc user :errors errors)))))
 
 
 
