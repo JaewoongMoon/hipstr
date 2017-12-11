@@ -15,7 +15,9 @@
                  [prone "0.6.0"]
                  [com.novemberain/validateur "2.3.1"]
                  [migratus "0.7.0"]
-                 [postgresql/postgresql "9.3-1102.jdbc41"]]
+                 [postgresql/postgresql "9.3-1102.jdbc41"]
+                 [yesql "0.5.0-beta2"]
+                 [crypto-password "0.1.3"]]
 
   :repl-options {:init-ns hipstr.repl}
   :jvm-opts ["-server"]

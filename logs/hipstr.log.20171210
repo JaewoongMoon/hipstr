@@ -1,0 +1,6 @@
+2017-12월-10 00:38:15 +0900 MA0065.local INFO [hipstr.handler] - checking migrations
+2017-12월-10 00:38:16 +0900 MA0065.local INFO [hipstr.handler] - finished migrations
+2017-12월-10 00:38:16 +0900 MA0065.local INFO [hipstr.handler] - 
+-=[ hipstr started successfully using the development profile ]=-
+2017-12월-10 23:49:46 +0900 MA0065.local INFO [hipstr.handler] - hipstr is shutting down...
+2017-12월-10 23:49:46 +0900 MA0065.local INFO [hipstr.handler] - shutdown complete!

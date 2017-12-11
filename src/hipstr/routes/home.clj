@@ -3,7 +3,8 @@
             [hipstr.layout :as layout]
             [hipstr.util :as util]
             [ring.util.response :as response]
-            [hipstr.validators.user-validator :as v]))
+            [hipstr.validators.user-validator :as v]
+            [hipstr.models.user-model :as u]))
 
 ; The home-page function isn't doting much.
 ; In fact, all it does is call hipstr.layout/render,
@@ -27,8 +28,11 @@
 (defn signup-page-submit [user]
   (let [errors (v/validate-signup user)]
        (if (empty? errors)
-         (response/redirect "/signup-success")
-         (layout/render "signup.html" (assoc user :errors errors)))))
+         (do
+           (u/add-user! user)
+           (response/redirect "/signup-success"))
+         (layout/render "signup.html"
+                        (assoc user :errors errors)))))
 
 
 
